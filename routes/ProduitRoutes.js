@@ -11,7 +11,7 @@ const {
 } = require('../controllers/ProduitController'); 
 
 
-router.post('/', upload.single('image'), createProduit);
+router.post('/', upload.array('images',10), createProduit);
 router.get('/', getProduits);
 router.get('/:id', getProduitById);
 router.patch('/:id', updateProduit);
