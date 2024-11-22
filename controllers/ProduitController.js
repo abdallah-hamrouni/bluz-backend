@@ -2,10 +2,13 @@ const Produit = require('../models/Produit');
 
 const createProduit = async (req, res) => {
     try {
-        const { name, price, category } = req.body;
-        const image = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : '';  // Get the uploaded file path
-        
-        const newProduit = new Produit({ name, price, image, category });
+        const { name, price, category,description } = req.body;
+/*         const image = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : '';  // Get the uploaded file path
+ */        const images = req.files 
+            ? req.files.map(file => `http://localhost:5000/uploads/${file.filename}`) 
+            : [];
+            
+        const newProduit = new Produit({ name, price, images, category ,description});
         const savedProduit = await newProduit.save();
 
         res.status(201).json(savedProduit);
@@ -16,15 +19,22 @@ const createProduit = async (req, res) => {
 
 const getProduits = async (req, res) => {
     try {
-        const { category } = req.query;  // Extract category from query parameters
+        const { category } = req.query;  
         let filter = {};
 
-        // If category is passed in the query, filter by category
         if (category) {
             filter.category = category;
         }
         const produits = await Produit.find(filter);
-        res.status(200).json(produits);
+        const produitsWithSingleImage = produits.map(produit => ({
+            _id: produit._id,
+            name: produit.name,
+            price: produit.price,
+            image: produit.images[0], 
+            category: produit.category,
+            description:produit.description
+        }));
+        res.status(200).json(produitsWithSingleImage);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -36,7 +46,16 @@ const getProduitById = async (req, res) => {
         if (!produit) {
             return res.status(404).json({ message: 'Product not found' });
         }
-        res.status(200).json(produit);
+         const produitWithSingleImage = {
+            _id: produit._id,
+            name: produit.name,
+            price: produit.price,
+            image: produit.images[0], // Include only the first image
+            images: produit.images,  // Full array of images
+            category: produit.category,
+            description:produit.description
+        };
+        res.status(200).json(produitWithSingleImage);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -44,10 +63,10 @@ const getProduitById = async (req, res) => {
 
 const updateProduit = async (req, res) => {
     try {
-        const { name, price, image, category } = req.body;
+        const { name, price, image, category,description } = req.body;
         const updatedProduit = await Produit.findByIdAndUpdate(
             req.params.id,
-            { name, price, image, category },
+            { name, price, image, category ,description},
             { new: true, runValidators: true }
         );
         if (!updatedProduit) {

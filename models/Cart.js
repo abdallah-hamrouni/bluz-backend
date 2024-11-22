@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 const CartSchema = new mongoose.Schema({
   userId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', // Reference to the User model
+    type: String, 
+    ref: 'User',
     required: true 
   },
   productId: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Product', // Reference to the Product model
+    ref: 'produit', 
     required: true 
   },
   quantity: { 
@@ -16,7 +16,8 @@ const CartSchema = new mongoose.Schema({
     default: 1 
   },
 }, {
-  timestamps: true, // Automatically create createdAt and updatedAt fields
+  timestamps: true, 
 });
 
-module.exports = mongoose.model('Cart', CartSchema);
+const Cart= mongoose.model('Cart', CartSchema);
+module.exports = Cart;
