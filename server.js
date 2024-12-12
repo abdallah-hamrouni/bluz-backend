@@ -5,8 +5,8 @@ const authRoutes = require("./routes/auth");
 const cors = require('cors');
 const pr = require('./routes/ProduitRoutes'); // Adjust path as necessary
 const carts = require('./routes/carts'); // Adjust path as necessary
-
-
+const orderRoutes = require('./routes/orderRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 dotenv.config();
 
 const app = express();
@@ -30,6 +30,10 @@ app.use("/api/auth", authRoutes);
 app.use('/api/products', pr);
 app.use('/uploads', express.static('public/uploads'));  // Serve static files from 'public/uploads'
 app.use('/api/carts', carts);
+app.use('/api/orders', orderRoutes);
+app.use('/api', feedbackRoutes);
+
+
 
 
 const PORT = process.env.PORT || 5000;
