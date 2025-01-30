@@ -13,7 +13,7 @@ const createProduit = async (req, res) => {
             const colorFiles = req.files[`colors[${index}][images]`];
 
             // If there are files, map the file data to image URLs
-            const colorImages = colorFiles ? colorFiles.map(file => `http://localhost:5000/uploads/${file.filename}`) : [];
+            const colorImages = colorFiles ? colorFiles.map(file => `https://bluz-backend.onrender.com/uploads/${file.filename}`) : [];
 
             return {
                 name: color.name,
