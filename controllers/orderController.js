@@ -24,5 +24,15 @@ const createOrder = async (req, res) => {
     res.status(500).json({ error: 'Une erreur est survenue lors de la création de la commande.' });
   }
 };
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 }); // Trie par date (plus récentes en premier)
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération des commandes." });
+  }
+};
 
-module.exports = { createOrder };
+
+module.exports = { createOrder, getAllOrders };
