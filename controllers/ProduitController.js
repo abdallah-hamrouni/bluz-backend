@@ -1,5 +1,5 @@
 const Produit = require('../models/Produit'); 
-
+const Cart = require('../models/Cart');
 const createProduit = async (req, res) => {
     try {
         console.log("Files received:", req.files);  // Debugging files
