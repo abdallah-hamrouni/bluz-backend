@@ -134,11 +134,16 @@ const deleteProduit = async (req, res) => {
         if (!produit) {
             return res.status(404).json({ message: 'Product not found' });
         }
-        res.status(200).json({ message: 'Product deleted successfully' });
+
+        // Supprimer toutes les entrées du panier contenant ce produit
+        await Cart.deleteMany({ productId: req.params.id });
+
+        res.status(200).json({ message: 'Product deleted successfully and removed from all carts' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 module.exports = {
     createProduit,
