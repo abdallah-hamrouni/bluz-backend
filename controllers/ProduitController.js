@@ -2,18 +2,14 @@ const Produit = require('../models/Produit');
 const Cart = require('../models/Cart');
 const createProduit = async (req, res) => {
     try {
-        console.log("Files received:", req.files);  // Debugging files
-        console.log("Body data received:", req.body);  // Debugging other fields
-
         const { name, price, category, description, colors } = req.body;
 
-        // Iterate over the colors array and match the files to each color
         const updatedColors = colors.map((color, index) => {
-            // Get the files for the current color
             const colorFiles = req.files[`colors[${index}][images]`];
 
-            // If there are files, map the file data to image URLs
-            const colorImages = colorFiles ? colorFiles.map(file => `https://bluz-backend.onrender.com/uploads/${file.filename}`) : [];
+            const colorImages = colorFiles
+                ? colorFiles.map(file => file.path) // <- Cloudinary fournit l'URL publique ici
+                : [];
 
             return {
                 name: color.name,
@@ -21,8 +17,14 @@ const createProduit = async (req, res) => {
             };
         });
 
-        // Create a new product
-        const newProduit = new Produit({ name, price, category, description, colors: updatedColors });
+        const newProduit = new Produit({
+            name,
+            price,
+            category,
+            description,
+            colors: updatedColors
+        });
+
         const savedProduit = await newProduit.save();
 
         res.status(201).json(savedProduit);
@@ -30,6 +32,7 @@ const createProduit = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 const getProduits = async (req, res) => {
